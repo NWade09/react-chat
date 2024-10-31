@@ -1,7 +1,7 @@
 import axios from "axios";
 import Navbar from "./Navbar";
 import '../css/Login.css';
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
@@ -62,12 +62,12 @@ function Register() {
                     />
                     <input 
                         type="password" 
-                        placeholder={emptyFieldsError && !password ? 'Password required' : 'Password'}
+                        placeholder={emptyFieldsError && !password ? 'Password required' : 'Password' || usernameError ? 'Username already taken' : 'Username'}
                         className="input" 
                         value={password} 
                         onChange={(e) => setPassword(e.target.value)}
                         style={{
-                            borderColor: emptyFieldsError && !password ? 'red' : '',
+                            borderColor: emptyFieldsError && !password ? 'red' : '' || usernameError ? 'red' : '',
                         }}
                     />
                     <button type="submit" className="button">Create Account</button>
