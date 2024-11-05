@@ -5,7 +5,6 @@ const { initializeApp } = require('firebase/app')
 const { getDatabase, get, set, ref } = require('firebase/database');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const session = require('express-session');
 
 const firebaseConfig = {
     apiKey: "AIzaSyCFCWpljnhH6mt83rd9JPdUqFshc5EPplg",
@@ -24,22 +23,12 @@ function generateSessionId(){ return crypto.randomBytes(16).toString('hex');}
 const app = express();
 const database = getDatabase();
 const PORT = 8080;
-const sessions = {}
 
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }));
 app.use(bodyParser.json())
-app.use(session({
-    secret: generateSessionId(),
-    resave: false,
-    saveUninitialized: true,
-    cookie:{
-        httpOnly: true,
-        secure: false,
-    }
-}))
 
 app.post('/Register', async (req, res) => {
     function makeUserId(){
@@ -95,11 +84,6 @@ app.post('/Login', async (req, res) => {
             const user = userSnapshot.val();
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (passwordMatch) {
-                // Store user ID in session
-                req.session.userId = userID;
-                req.session.username = username; // Optionally store username
-                console.log(req.session);
-                req.session.save();
                 return res.status(200).send('Login successful');
             }
         }
