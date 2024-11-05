@@ -4,20 +4,26 @@ import Navbar from '../components/Navbar.js';
 import { ref, push, onChildAdded } from "firebase/database";
 import { useState, useEffect } from 'react';
 import database from '../components/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 function Chat() {
     const sessionData = JSON.parse(sessionStorage.getItem('sessionData'));
+    const navigate = useNavigate()
+    if (!sessionData){
+        navigate('/Login');
+    }
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-
     useEffect(() => {
         const messagesRef = ref(database, 'messages');
-
-        // Set up onChildAdded listener
-        onChildAdded(messagesRef, (snapshot) => {
+    
+        const unsubscribe = onChildAdded(messagesRef, (snapshot) => {
             const newMessage = snapshot.val();
             setMessages((prevMessages) => [...prevMessages, newMessage]);
         });
+    
+        // Clean up the listener when the component unmounts
+        return () => unsubscribe();
     }, []);
 
     const sendMessage = (e) => {
@@ -26,7 +32,6 @@ function Chat() {
 
         const messagesRef = ref(database, 'messages');
 
-        // Push new message to Firebase with name and timestamp
         push(messagesRef, {
             text: message,
             name: sessionData.username,

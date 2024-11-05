@@ -1,13 +1,15 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../css/Navbar.css'
 
 function Navbar(){
+    const navigate = useNavigate();
     const location = useLocation();
     const sessionData = JSON.parse(sessionStorage.getItem('sessionData'));
 
     const Logout = () => {
         sessionStorage.removeItem('sessionData')
+        navigate('/')
     };
 
     return (
