@@ -2,17 +2,22 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../css/Navbar.css'
 
-function Navbar({active = null}){
+function Navbar(){
     const location = useLocation();
     const sessionData = JSON.parse(sessionStorage.getItem('sessionData'));
+
+    const Logout = () => {
+        sessionStorage.removeItem('sessionData')
+    };
 
     return (
     <div className="navbar">
         <Link to={'/'} className={location.pathname === '/' ? "active" : ""}>Home</Link>
+        {sessionData ? <Link to={'/Chat'} className={location.pathname === '/Chat' ? "active" : ""}>Chat</Link> : ''}
         {sessionData ?
             <div className='navbar-right'>
                 <div className='dropdown'>
-                <Link>Log out</Link>
+                <Link onClick={Logout}>Log out</Link>
                 </div>
 
             </div> : 

@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import '../css/Navbar.css'
-import Navbar from './Navbar';
+import Navbar from '../components/Navbar';
 
 function Home() {
     useEffect(() => {
         const sessionData = JSON.parse(sessionStorage.getItem('sessionData'));
         console.log('Session Data from sessionStorage:', sessionData);
     }, []);
-
     return (
         <div>
             <Navbar />
