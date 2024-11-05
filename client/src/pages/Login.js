@@ -18,11 +18,19 @@ const Login = () => {
             const response = await axios.post('http://localhost:8080/Login', {
                 username: username,
                 password: password,
+            }, {
+                withCredentials: true // Allows sending cookies with the request
             });
 
-            // If login is successful, redirect to home or another page
-            console.log('Response:', response.data);
-            //navigate('/'); // Change this to the appropriate route
+            if (response.status === 200 && response.data.sessionData) {
+                const { sessionData } = response.data;
+                // Store session data in sessionStorage
+                sessionStorage.setItem('sessionData', JSON.stringify(sessionData));
+                console.log('Session data stored in sessionStorage:', sessionData);
+                
+                // Redirect to home or another page
+                navigate('/'); // Adjust route as needed
+            }
 
         } catch (error) {
             if (error.response) {

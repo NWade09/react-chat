@@ -5,6 +5,8 @@ const { initializeApp } = require('firebase/app')
 const { getDatabase, get, set, ref } = require('firebase/database');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const session = require('express-session');
+function generateSessionId(){ return crypto.randomBytes(16).toString('hex');}
 
 const firebaseConfig = {
     apiKey: "AIzaSyCFCWpljnhH6mt83rd9JPdUqFshc5EPplg",
@@ -15,10 +17,20 @@ const firebaseConfig = {
     messagingSenderId: "664476639691",
     appId: "1:664476639691:web:edab4630f72f260686964e",
     databaseURL: "https://reactchat-6d38f-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  };
+};
+
+const sessionConfig = {
+    secret: generateSessionId(),
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax'
+    },
+}
 
 initializeApp(firebaseConfig);
-function generateSessionId(){ return crypto.randomBytes(16).toString('hex');}
 
 const app = express();
 const database = getDatabase();
@@ -29,6 +41,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(bodyParser.json())
+app.use(session(sessionConfig))
 
 app.post('/Register', async (req, res) => {
     function makeUserId(){
@@ -38,7 +51,7 @@ app.post('/Register', async (req, res) => {
     }
 
     const { username, password } = req.body;
-    const usernameRef = ref(databse, 'usernames/' + username);
+    const usernameRef = ref(database, 'usernames/' + username);
 
     try {
         const usernameSnapshot = await get(usernameRef);
@@ -48,13 +61,15 @@ app.post('/Register', async (req, res) => {
 
         const userID = makeUserId();
         const saltRounds = 10;
-        const hashedPasswords = bcrypt.hash(password, saltRounds);
+        const hashedPasswords = await bcrypt.hash(password, saltRounds);
 
-        const userRef = ref(databse, 'users/' + userID);
+        const userRef = ref(database, 'users/' + userID);
         const userData = {
             username: username,
             password: hashedPasswords
         };
+
+        console.log(userData)
         await set(userRef, userData);
         await set(usernameRef, userID);
 
@@ -84,7 +99,16 @@ app.post('/Login', async (req, res) => {
             const user = userSnapshot.val();
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (passwordMatch) {
-                return res.status(200).send('Login successful');
+                req.session.userID = userID;
+                req.session.username = username;
+                req.session.save();
+                return res.status(200).json({
+                    message: 'Login successful',
+                    sessionData: {
+                        userID: req.session.userID,
+                        username: req.session.username
+                    }
+                });
             }
         }
         
@@ -94,11 +118,19 @@ app.post('/Login', async (req, res) => {
         res.status(500).send('Error logging in');
     }
 });
-app.post('/api', async (req, res) => {
-    const { username, password } = req.body;
-    res.status(201).send(`Recieved Message: ${username.data}`);
-})
 
+app.get('/session-details', (req, res) => {
+    if (req.session.userID && req.session.username) {
+        // Send session data as JSON
+        res.json({
+            userID: req.session.userID,
+            username: req.session.username
+        });
+    } else {
+        console.log(req.session)
+        res.status(401).send('No session data found');
+    }
+});
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 })

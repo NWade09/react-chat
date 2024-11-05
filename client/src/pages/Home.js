@@ -1,13 +1,22 @@
-import '../css/Navbar.css';
+import React, { useEffect } from 'react';
+import '../css/Navbar.css'
 import Navbar from './Navbar';
 
-function Home(){
-    return(
-        <div className="HomeDiv">
+function Home() {
+    useEffect(() => {
+        const sessionData = JSON.parse(sessionStorage.getItem('sessionData'));
+        console.log('Session Data from sessionStorage:', sessionData);
+    }, []);
+
+    return (
+        <div>
             <Navbar />
-            <button type='submit'>Make API call</button>
+            <h1>Home Page</h1>
+            <button onClick={() => console.log('Session Data:', JSON.parse(sessionStorage.getItem('sessionData')))}>
+                Get Session Details
+            </button>
         </div>
-    )
+    );
 }
 
 export default Home;
