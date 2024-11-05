@@ -5,12 +5,15 @@ import { ref, push, onChildAdded } from "firebase/database";
 import { useState, useEffect, useRef } from 'react';
 import database from '../components/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 function Chat() {
     const navigate = useNavigate();
     const sessionData = JSON.parse(sessionStorage.getItem('sessionData'));
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [replying, setReplying] = useState(false);
+    const [replyTo, setReplyTo] = useState(null);
     const messagesEndRef = useRef(null);
     if (!sessionData){
         navigate('/Login')
@@ -27,7 +30,6 @@ function Chat() {
         return () => unsubscribe();
     }, []);
 
-
     useEffect(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -39,28 +41,56 @@ function Chat() {
         if (message.trim() === '') return;
 
         const messagesRef = ref(database, 'messages');
-
-
         push(messagesRef, {
+            id: uuidv4(),
             text: message,
             name: sessionData.username,
             timestamp: Date.now(),
+            replyTo: replyTo ? replyTo.id : null,
         });
 
         setMessage('');
+        setReplying(false);
+        setReplyTo(null);
+    };
+
+    const formatTimestamp = (timestamp) => {
+        const date = new Date(timestamp);
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours %= 12;
+        hours = hours || 12;
+        const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+        return `${hours}:${minutesStr} ${ampm}`;
+    };
+
+    const handleDoubleClick = (msg) => {
+        setReplying(true);
+        console.log(msg);
+        setReplyTo(msg);
     };
 
     return (
         <div className='chat-container'>
             <Navbar />
-
+            
             <ul id='messages'>
                 {messages.map((msg, index) => (
-                    <li key={index} className='message'>
+                    <li 
+                        key={index} 
+                        className='message' 
+                        onDoubleClick={() => handleDoubleClick(msg)}
+                    >
                         <div className='message-header'>
                             <span className='message-name'>{msg.name}</span>
-                            <span className='message-date'>{new Date(msg.timestamp).toLocaleString({hour12: true})}</span>
+                            <span className='message-date'>{formatTimestamp(msg.timestamp)}</span>
                         </div>
+                        {msg.replyTo && (
+                            <div className='reply-message'>
+                                &gt; Replying to {messages.find(m => m.username)}{messages.find(m => m.id === msg.replyTo)?.text}
+                            </div>
+                        )}
                         <div className='message-text'>{msg.text}</div>
                     </li>
                 ))}
@@ -68,6 +98,11 @@ function Chat() {
             </ul>
 
             <form className='input-container' onSubmit={sendMessage}>
+                {replying && replyTo && (
+                    <div className='replying-to'>
+                        Replying to: {replyTo.text}
+                    </div>
+                )}
                 <input
                     type='text'
                     placeholder='Type a message...'

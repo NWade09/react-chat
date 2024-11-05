@@ -97,11 +97,22 @@
     color: #333;
 }
 
+.reply-message {
+    color: green;
+    margin-left: 10px;
+    font-style: italic;
+}
+
+.replying-to {
+    margin-bottom: 10px;
+    color: green;
+    font-style: italic;
+}
 .input-container {
     display: flex;
     padding: 10px;
     border-top: 1px solid #ddd;
-    background-color: #fff; /* Ensure the input area has a background */
+    background-color: #fff;
 }
 
 .message-input {
