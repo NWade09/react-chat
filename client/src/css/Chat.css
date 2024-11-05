@@ -64,7 +64,7 @@
 }
 
 #messages > li:nth-child(odd) {
-    background: #efefef; /* Light gray for odd messages */
+    background: #e6e5e5; /* Light gray for odd messages */
 }
 
 #messages > li:hover {
