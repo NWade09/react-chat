@@ -7,7 +7,7 @@ import Chat from './pages/Chat';
 
 function App(){
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/react-chat'>
       <Routes >
         <Route path='/' element={<Home />} />
         <Route path='/Login' element={<Login />} />

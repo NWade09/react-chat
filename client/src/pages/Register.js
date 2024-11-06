@@ -24,7 +24,7 @@ function Register() {
             setUsernameError(false);
             setEmptyFieldsError(false);
 
-            const response = await axios.post('http://localhost:8080/Register', {
+            const response = await axios.post('http://3.27.161.209/Register', {
                 username: username,
                 password: password
             });
