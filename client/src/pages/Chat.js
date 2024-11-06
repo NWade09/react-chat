@@ -86,7 +86,7 @@ function Chat() {
                             {msg.name}
                             {msg.replyTo && (
                             <div className='reply-message'>
-                                &gt; {messages.find(m => m.id === msg.replyTo)?.name}: {messages.find(m => m.id === msg.replyTo)?.text}
+                                &gt;&gt; {messages.find(m => m.id === msg.replyTo)?.name}: {messages.find(m => m.id === msg.replyTo)?.text}
                             </div>
                         )}
                         </span>
@@ -98,13 +98,11 @@ function Chat() {
                 ))}
                 <div ref={messagesEndRef} />
             </ul>
-
+            {replying && replyTo && (<div className='above-form-content'>
+                <span className='replying-to'>Replying to {replyTo.name}</span>
+                <button onClick={() => { setReplying(false); setReplyTo(null); }}>Cancel</button>
+            </div>)}
             <form className='input-container' onSubmit={sendMessage}>
-                {replying && replyTo && (
-                    <div className='replying-to'>
-                        Replying to: {replyTo.text}
-                    </div>
-                )}
                 <input
                     type='text'
                     placeholder='Type a message...'
