@@ -97,10 +97,20 @@
     color: #333;
 }
 
+.message-header{
+    display: flex;
+    align-items: center;
+}
+.message-name{
+    display: flex;
+    align-items: center;
+}
+
 .reply-message {
-    color: green;
-    margin-left: 10px;
+    color: rgb(105, 186, 105);
+    margin-left: 5px;
     font-style: italic;
+    font-weight: lighter;
 }
 
 .replying-to {

@@ -52,7 +52,9 @@ function Register() {
                 <form onSubmit={handleRegister}>
                     <input 
                         type='text' 
-                        placeholder={emptyFieldsError && !username ? 'Username required' : 'Username' || usernameError ? 'Username already taken' : 'Username'}
+                        placeholder={
+                            (emptyFieldsError && !username) ? 'Username required':
+                            (usernameError ? 'Username already taken' : 'Username')}
                         className='input' 
                         value={username} 
                         onChange={(e) => setUsername(e.target.value)}
@@ -62,7 +64,7 @@ function Register() {
                     />
                     <input 
                         type="password" 
-                        placeholder={emptyFieldsError && !password ? 'Password required' : 'Password' || usernameError ? 'Username already taken' : 'Username'}
+                        placeholder={emptyFieldsError && !password ? 'Password required' : 'Password'}
                         className="input" 
                         value={password} 
                         onChange={(e) => setPassword(e.target.value)}

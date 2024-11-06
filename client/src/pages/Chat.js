@@ -67,7 +67,6 @@ function Chat() {
 
     const handleDoubleClick = (msg) => {
         setReplying(true);
-        console.log(msg);
         setReplyTo(msg);
     };
 
@@ -83,14 +82,17 @@ function Chat() {
                         onDoubleClick={() => handleDoubleClick(msg)}
                     >
                         <div className='message-header'>
-                            <span className='message-name'>{msg.name}</span>
-                            <span className='message-date'>{formatTimestamp(msg.timestamp)}</span>
-                        </div>
-                        {msg.replyTo && (
+                            <span className='message-name'>
+                            {msg.name}
+                            {msg.replyTo && (
                             <div className='reply-message'>
-                                &gt; Replying to {messages.find(m => m.username)}{messages.find(m => m.id === msg.replyTo)?.text}
+                                &gt; {messages.find(m => m.id === msg.replyTo)?.name}: {messages.find(m => m.id === msg.replyTo)?.text}
                             </div>
                         )}
+                        </span>
+                            <span className='message-date'>{formatTimestamp(msg.timestamp)}</span>
+                        </div>
+
                         <div className='message-text'>{msg.text}</div>
                     </li>
                 ))}
