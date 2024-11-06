@@ -7,5 +7,6 @@ A react version to one of my previous projects, chatPlat. This project is mainly
 - [x] Scroll down when new message
 - [x] Add replies
 - [x] Move reply text to top of input
+- [ ] When click on reply, takes you to message
 - [ ] Add Direct Messages
 - [ ] Make website look good
