@@ -6,5 +6,6 @@ A react version to one of my previous projects, chatPlat. This project is mainly
 - [x] Fix duplicate messages
 - [x] Scroll down when new message
 - [x] Add replies
-- [ ] Move reply text to top of input
+- [x] Move reply text to top of input
 - [ ] Add Direct Messages
+- [ ] Make website look good
