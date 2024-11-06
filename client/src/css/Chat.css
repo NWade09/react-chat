@@ -44,6 +44,7 @@
 #messages {
     list-style-type: none;
     margin: 0;
+    padding: 0;
     flex: 1;
     overflow-y: auto; 
     position: relative;
@@ -54,7 +55,7 @@
 }
 
 #messages > li:nth-child(odd) {
-    background: #e6e5e5;
+    background: #e6e5e5; 
 }
 
 #messages > li:hover {
