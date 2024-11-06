@@ -8,5 +8,7 @@ A react version to one of my previous projects, chatPlat. This project is mainly
 - [x] Add replies
 - [x] Move reply text to top of input
 - [ ] When click on reply, takes you to message
+- [ ] Add image embedding
+- [ ] Profile pictures
 - [ ] Add Direct Messages
 - [ ] Make website look good
